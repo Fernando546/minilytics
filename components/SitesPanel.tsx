@@ -136,39 +136,67 @@ function SiteCard({ site, onRemove }: { site: Site, onRemove: (id: string) => vo
 MinilyticsTracker.init({ endpoint: '${origin}/api/track', siteId: '${site.site_id}' });`;
 
   // Multi-framework examples using environment variables
-  const reactSnippet = `'use client';
-import { useEffect } from 'react';
-import { MinilyticsTracker } from '@fernando546/tracker';
+  const nextAppRouterSnippet = `// app/layout.tsx
+import { MinilyticsProvider } from '@fernando546/tracker/react';
 
-export default function App() {
-  useEffect(() => {
-    const endpoint = process.env.NEXT_PUBLIC_MINILY_ENDPOINT!;
-    const siteId = process.env.NEXT_PUBLIC_MINILY_SITE_ID!;
-    MinilyticsTracker.init({ endpoint, siteId });
-  }, []);
-  return null;
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <MinilyticsProvider
+          siteId={process.env.NEXT_PUBLIC_MINILY_SITE_ID!}
+          apiUrl={process.env.NEXT_PUBLIC_MINILY_ENDPOINT}
+          debug={true}
+        >
+          {children}
+        </MinilyticsProvider>
+      </body>
+    </html>
+  );
 }`;
 
-  const vueSnippet = `// main.ts or any component
-import { onMounted } from 'vue';
+  const nextPagesRouterSnippet = `// pages/_app.tsx
+import type { AppProps } from 'next/app';
+import { MinilyticsProvider } from '@fernando546/tracker/react';
+
+export default function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    <MinilyticsProvider
+      siteId={process.env.NEXT_PUBLIC_MINILY_SITE_ID!}
+      apiUrl={process.env.NEXT_PUBLIC_MINILY_ENDPOINT}
+      debug={true}
+    >
+      <Component {...pageProps} />
+    </MinilyticsProvider>
+  );
+}`;
+
+  const viteReactSnippet = `// App.tsx or main.tsx
+import { MinilyticsProvider } from '@fernando546/tracker/react';
+
+export default function App() {
+  return (
+    <MinilyticsProvider
+      siteId={import.meta.env.VITE_MINILY_SITE_ID}
+      apiUrl={import.meta.env.VITE_MINILY_ENDPOINT}
+      debug={true}
+    >
+      <div>Your App</div>
+    </MinilyticsProvider>
+  );
+}`;
+
+  const vueSnippet = `// main.ts
+import { createApp } from 'vue';
+import App from './App.vue';
 import { MinilyticsTracker } from '@fernando546/tracker';
 
-export default {
-  setup() {
-    onMounted(() => {
-      const endpoint = import.meta.env.VITE_MINILY_ENDPOINT as string;
-      const siteId = import.meta.env.VITE_MINILY_SITE_ID as string;
-      MinilyticsTracker.init({ endpoint, siteId });
-    });
-  },
-};`;
+MinilyticsTracker.init({
+  endpoint: import.meta.env.VITE_MINILY_ENDPOINT,
+  siteId: import.meta.env.VITE_MINILY_SITE_ID,
+});
 
-  const tsSnippet = `// main.ts
-import { MinilyticsTracker } from '@fernando546/tracker';
-
-const endpoint = import.meta.env.VITE_MINILY_ENDPOINT as string;
-const siteId = import.meta.env.VITE_MINILY_SITE_ID as string;
-MinilyticsTracker.init({ endpoint, siteId });`;
+createApp(App).mount('#app');`;
 
   // .env examples for different frameworks
   const nextEnvExample = `# .env.local (Next.js)
@@ -240,9 +268,10 @@ VITE_MINILY_SITE_ID=${site.site_id}`;
             language="typescript"
             filename="integration.ts"
             tabs={[
-              { name: 'React (App.tsx)', code: reactSnippet, language: 'tsx', highlightLines: [6] },
-              { name: 'Vue (main.ts)', code: vueSnippet, language: 'ts', highlightLines: [7] },
-              { name: 'TypeScript (main.ts)', code: tsSnippet, language: 'ts', highlightLines: [3] }
+              { name: 'Next.js (app/layout.tsx)', code: nextAppRouterSnippet, language: 'tsx', highlightLines: [2, 8, 9, 10, 11, 12, 14] },
+              { name: 'Next.js (pages/_app.tsx)', code: nextPagesRouterSnippet, language: 'tsx', highlightLines: [3, 7, 8, 9, 10, 11, 13] },
+              { name: 'Vite/React', code: viteReactSnippet, language: 'tsx', highlightLines: [2, 6, 7, 8, 9, 10, 12] },
+              { name: 'Vue (main.ts)', code: vueSnippet, language: 'ts', highlightLines: [4, 5, 6, 7, 8, 9] }
             ]}
           />
           <div className="h-2" />
