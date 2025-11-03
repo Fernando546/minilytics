@@ -135,6 +135,50 @@ function SiteCard({ site, onRemove }: { site: Site, onRemove: (id: string) => vo
   const npmSnippet = `import { MinilyticsTracker } from '@fernando546/tracker';
 MinilyticsTracker.init({ endpoint: '${origin}/api/track', siteId: '${site.site_id}' });`;
 
+  // Multi-framework examples using environment variables
+  const reactSnippet = `'use client';
+import { useEffect } from 'react';
+import { MinilyticsTracker } from '@fernando546/tracker';
+
+export default function App() {
+  useEffect(() => {
+    const endpoint = process.env.NEXT_PUBLIC_MINILY_ENDPOINT!;
+    const siteId = process.env.NEXT_PUBLIC_MINILY_SITE_ID!;
+    MinilyticsTracker.init({ endpoint, siteId });
+  }, []);
+  return null;
+}`;
+
+  const vueSnippet = `// main.ts or any component
+import { onMounted } from 'vue';
+import { MinilyticsTracker } from '@fernando546/tracker';
+
+export default {
+  setup() {
+    onMounted(() => {
+      const endpoint = import.meta.env.VITE_MINILY_ENDPOINT as string;
+      const siteId = import.meta.env.VITE_MINILY_SITE_ID as string;
+      MinilyticsTracker.init({ endpoint, siteId });
+    });
+  },
+};`;
+
+  const tsSnippet = `// main.ts
+import { MinilyticsTracker } from '@fernando546/tracker';
+
+const endpoint = import.meta.env.VITE_MINILY_ENDPOINT as string;
+const siteId = import.meta.env.VITE_MINILY_SITE_ID as string;
+MinilyticsTracker.init({ endpoint, siteId });`;
+
+  // .env examples for different frameworks
+  const nextEnvExample = `# .env.local (Next.js)
+NEXT_PUBLIC_MINILY_ENDPOINT=${origin}/api/track
+NEXT_PUBLIC_MINILY_SITE_ID=${site.site_id}`;
+
+  const viteEnvExample = `# .env (Vite - React/Vue/TS)
+VITE_MINILY_ENDPOINT=${origin}/api/track
+VITE_MINILY_SITE_ID=${site.site_id}`;
+
   const [removing, setRemoving] = useState(false);
   const handleRemove = async () => {
     if (!confirm('Remove this site?')) return;
@@ -158,7 +202,7 @@ MinilyticsTracker.init({ endpoint: '${origin}/api/track', siteId: '${site.site_i
   };
 
   return (
-    <div className="rounded-lg border p-4 dark:border-gray-700">
+    <div className="rounded-lg border p-4 dark:border-neutral-700">
       <div className="mb-2 flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold">{site.domain}</h3>
@@ -194,8 +238,21 @@ MinilyticsTracker.init({ endpoint: '${origin}/api/track', siteId: '${site.site_i
           <div className="h-2" />
           <CodeBlock
             language="typescript"
-            filename="app.ts"
-            code={npmSnippet}
+            filename="integration.ts"
+            tabs={[
+              { name: 'React (App.tsx)', code: reactSnippet, language: 'tsx', highlightLines: [6] },
+              { name: 'Vue (main.ts)', code: vueSnippet, language: 'ts', highlightLines: [7] },
+              { name: 'TypeScript (main.ts)', code: tsSnippet, language: 'ts', highlightLines: [3] }
+            ]}
+          />
+          <div className="h-2" />
+          <CodeBlock
+            language="bash"
+            filename=".env examples"
+            tabs={[
+              { name: '.env.local (Next.js)', code: nextEnvExample, language: 'bash', highlightLines: [2,3] },
+              { name: '.env (Vite)', code: viteEnvExample, language: 'bash', highlightLines: [2,3] }
+            ]}
           />
         </div>
       </div>
