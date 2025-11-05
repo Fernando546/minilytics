@@ -152,14 +152,14 @@ export default function Home() {
                   $ npm install @minilytics/tracker
                 </TypingAnimation>
                 
-                <AnimatedSpan className="text-gray-500">
+                <AnimatedSpan className="text-gray-300">
                   + @minilytics/tracker@1.0.0
                 </AnimatedSpan>
-                
-                <AnimatedSpan className="text-gray-500">
+
+                <AnimatedSpan className="text-gray-300">
                   added 1 package in 2s
                 </AnimatedSpan>
-                
+
                 <AnimatedSpan className="text-green-400">
                   ✓ Ready to track!
                 </AnimatedSpan>

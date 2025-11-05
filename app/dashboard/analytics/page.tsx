@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { getSupabaseClient } from "@/lib/supabaseClient"
+import ViewsLineChart from "@/components/analytics/ViewsLineChart"
+import ChartAreaInteractive from "@/components/analytics/ChartAreaInteractive"
 import { BarChart3, TrendingUp, Eye, Globe } from "lucide-react"
 
 type Site = {
@@ -177,36 +179,15 @@ export default function AnalyticsPage() {
         <h2 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
           Last 7 Days
         </h2>
-        
+
         {loading ? (
           <div className="flex h-64 items-center justify-center">
             <div className="text-gray-500">Loading...</div>
           </div>
         ) : (
-          <div className="space-y-4">
-            {dailyStats.map((stat) => (
-              <div key={stat.date} className="flex items-center gap-4">
-                <div className="w-24 text-sm text-gray-600 dark:text-gray-400">
-                  {new Date(stat.date).toLocaleDateString('en-US', { 
-                    month: 'short', 
-                    day: 'numeric' 
-                  })}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <div className="h-8 flex-1 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-                      <div
-                        className="h-full bg-linear-to-r from-blue-500 to-purple-500 transition-all"
-                        style={{ width: `${(stat.views / maxViews) * 100}%` }}
-                      />
-                    </div>
-                    <div className="w-12 text-right text-sm font-medium text-gray-900 dark:text-white">
-                      {stat.views}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div>
+            {/* Interactive area chart (template) */}
+            <ChartAreaInteractive data={dailyStats.map(d => ({ date: d.date, visitors: d.views }))} />
           </div>
         )}
       </div>
