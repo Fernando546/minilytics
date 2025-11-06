@@ -24,11 +24,6 @@ const menuItems = [
     icon: Home,
   },
   {
-    title: "Analytics",
-    url: "/dashboard/analytics",
-    icon: BarChart3,
-  },
-  {
     title: "Sites",
     url: "/dashboard/sites",
     icon: Globe,
